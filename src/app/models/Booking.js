@@ -29,4 +29,14 @@ Booking.getBookingByEmail = (email) => {
     return db.query(`SELECT * FROM ${TABLE_NAME} WHERE ${COLUMN_EMAIL} = $1`, [email]);
 };
 
+// GET BOOKING BY EMAIL
+Booking.getBookingById = (id) => {
+    return db.query(`SELECT * FROM ${TABLE_NAME} WHERE ${COLUMN_ID} = $1`, [id]);
+};
+
+// TRUNCATE BOOKING
+Booking.truncate = () => {
+    return db.query(`TRUNCATE ${TABLE_NAME} RESTART IDENTITY CASCADE`);
+};
+
 module.exports = { Booking };

@@ -24,4 +24,9 @@ Seat.getSeatById = (seat_id) => {
     return db.query(`SELECT * FROM ${TABLE_NAME} WHERE ${COLUMN_ID} = $1`, [seat_id]);
 };
 
+// SET SEAT IS BOOKED TO FALSE
+Seat.setSeatIsBookedToFalse = () => {
+    return db.query(`UPDATE ${TABLE_NAME} SET ${COLUMN_SEAT_IS_BOOKED} = FALSE`);
+};
+
 module.exports = { Seat };

@@ -7,6 +7,14 @@ class BookingController {
     async create(req, res) {
         const { seatId, seasonId, studentId, fullName, email, phoneNumber, qrCodeImageSrc } = req.body
 
+        // Check if seat is available
+        const checkIsExist = await Booking.getBookingByEmail(email)
+        if (checkIsExist.rowCount !== 0) {
+            return res.status(500).json({
+                error: 'Email already exist'
+            })
+        }
+
         // Save to database
         const booking = await Booking.create(seatId, studentId, fullName, email, phoneNumber)
         if (booking.rowCount === 0) {
@@ -109,6 +117,26 @@ class BookingController {
 
         return res.status(200).json({
             data: result
+        })
+    }
+
+    async truncate(req, res) {
+        const booking = await Booking.truncate()
+        if (booking.rowCount === 0) {
+            return res.status(500).json({
+                error: 'Booking truncate failed'
+            })
+        }
+
+        const seat = await Seat.setSeatIsBookedToFalse()
+        if (seat.rowCount === 0) {
+            return res.status(500).json({
+                error: 'Seat status update failed'
+            })
+        }
+
+        return res.status(200).json({
+            data: 'Truncate success'
         })
     }
 }
