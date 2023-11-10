@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose the port the app runs on
-EXPOSE 8080
+EXPOSE 3000
 
-# Define the command to run your app
-CMD ["nodemon", "src/index.js"]
+# Define the command to run your app with wait-for-it
+CMD ["npm", "start"]
