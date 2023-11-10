@@ -1,10 +1,11 @@
+const nodemailer = require('nodemailer');
 const { Booking } = require("../models/Booking")
 const { Seat } = require("../models/Seat")
 const { Season } = require("../models/season")
 
 class BookingController {
     async create(req, res) {
-        const { seatId, seasonId, studentId, fullName, email, phoneNumber } = req.body
+        const { seatId, seasonId, studentId, fullName, email, phoneNumber, qrCodeImageSrc } = req.body
 
         // Save to database
         const booking = await Booking.create(seatId, studentId, fullName, email, phoneNumber)
@@ -21,6 +22,40 @@ class BookingController {
                 error: 'Seat status update failed'
             })
         }
+
+        // Send mail
+        // Create a transporter object for sending emails
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_ADDRESS,
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+
+        // Define the email options
+        let mailOptions = {
+            from: process.env.EMAIL_ADDRESS,
+            to: email,
+            subject: 'QR Code Email',
+            text: 'Attached is a QR code.',
+            attachments: [
+                {
+                    filename: 'qrcode.png',
+                    content: qrCodeImageSrc.split(',')[1],  // extract base64 content from data URL
+                    encoding: 'base64'
+                }
+            ]
+        };
+
+        // Send the email with QR code attachment
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
 
         return res.status(200).json({
             data: booking.rows[0]
