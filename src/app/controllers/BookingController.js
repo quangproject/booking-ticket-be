@@ -1,11 +1,12 @@
 const nodemailer = require('nodemailer');
+const fs = require('fs');
 const { Booking } = require("../models/Booking")
 const { Seat } = require("../models/Seat")
 const { Season } = require("../models/Season")
 
 class BookingController {
     async create(req, res) {
-        const { seatId, seasonId, studentId, fullName, email, phoneNumber, qrCodeImageSrc } = req.body
+        const { seatId, seatNumber, seasonId, seasonName, studentId, fullName, email, phoneNumber, qrCodeImageSrc } = req.body
 
         // Check if seat is available
         const checkIsExist = await Booking.getBookingByEmail(email)
@@ -41,12 +42,23 @@ class BookingController {
             }
         });
 
+        // Read the HTML file content
+        let htmlContent = fs.readFileSync('src\\resources\\template\\email.html', 'utf-8');
+
+        // Replace placeholders with actual data
+        htmlContent = htmlContent.replace('{{season_name}}', seasonName);
+        htmlContent = htmlContent.replace('{{seat_number}}', seatNumber);
+        htmlContent = htmlContent.replace('{{full_name}}', fullName);
+        htmlContent = htmlContent.replace('{{email}}', email);
+        htmlContent = htmlContent.replace('{{phone_number}}', phoneNumber);
+        htmlContent = htmlContent.replace('{{student_id}}', studentId === '' ? 'N/A' : studentId);
+
         // Define the email options
         let mailOptions = {
             from: process.env.EMAIL_ADDRESS,
             to: email,
             subject: 'QR Code Email',
-            text: 'Attached is a QR code.',
+            html: htmlContent,
             attachments: [
                 {
                     filename: 'qrcode.png',
