@@ -1,5 +1,5 @@
 const { Seat } = require("../models/Seat");
-const { Season } = require("../models/season");
+const { Season } = require("../models/Season");
 
 class HomeController {
     async index(req, res) {
