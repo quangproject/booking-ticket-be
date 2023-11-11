@@ -7,10 +7,6 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Set permissions and switch to a non-root user
-RUN chown -R node:node /app
-USER node
-
 # Install app dependencies
 RUN npm install
 
