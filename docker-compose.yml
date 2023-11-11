@@ -1,6 +1,18 @@
 version: "3"
 
 services:
+  booking-ticket-app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - booking-ticket-db
+    networks:
+      - booking-ticket-network
+
   booking-ticket-db:
     image: postgres:latest
     environment:
