@@ -2,13 +2,12 @@ version: "3"
 
 services:
   booking-ticket-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     ports:
       - "3000:3000"
     volumes:
-      - .:/usr/src/app
+      - .:/app
+      - /app/node_modules
     depends_on:
       - booking-ticket-db
     networks:
