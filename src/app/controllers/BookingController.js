@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const { Booking } = require("../models/Booking")
 const { Seat } = require("../models/Seat")
-const { Season } = require("../models/season")
+const { Season } = require("../models/Season")
 
 class BookingController {
     async create(req, res) {
