@@ -8,14 +8,6 @@ class BookingController {
     async create(req, res) {
         const { seatId, seatNumber, seasonId, seasonName, studentId, fullName, email, phoneNumber, qrCodeImageSrc } = req.body
 
-        // Check if seat is available
-        const checkIsExist = await Booking.getBookingByEmail(email)
-        if (checkIsExist.rowCount !== 0) {
-            return res.status(500).json({
-                error: 'Email already exist'
-            })
-        }
-
         // Save to database
         const booking = await Booking.create(seatId, studentId, fullName, email, phoneNumber)
         if (booking.rowCount === 0) {
@@ -46,6 +38,7 @@ class BookingController {
         let htmlContent = fs.readFileSync('src\\resources\\template\\email.html', 'utf-8');
 
         // Replace placeholders with actual data
+        htmlContent = htmlContent.replace('{{booking_id}}', booking.rows[0].id);
         htmlContent = htmlContent.replace('{{season_name}}', seasonName);
         htmlContent = htmlContent.replace('{{seat_number}}', seatNumber);
         htmlContent = htmlContent.replace('{{full_name}}', fullName);
@@ -83,10 +76,10 @@ class BookingController {
     }
 
     async searchByEmail(req, res) {
-        const { email } = req.query
+        const { bookingId } = req.query
         var result = [];
 
-        const booking = await Booking.getBookingByEmail(email)
+        const booking = await Booking.getBookingById(bookingId)
         if (booking.rowCount === 0) {
             return res.status(500).json({
                 error: 'Booking not found'
