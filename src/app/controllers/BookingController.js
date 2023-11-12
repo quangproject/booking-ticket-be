@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const fs = require('fs');
+const path = require('path');
 const { Booking } = require("../models/Booking")
 const { Seat } = require("../models/Seat")
 const { Season } = require("../models/Season")
@@ -34,17 +35,29 @@ class BookingController {
             }
         });
 
-        // Read the HTML file content
-        let htmlContent = fs.readFileSync('src\\resources\\template\\email.html', 'utf-8');
+        let htmlContent = '';
+        try {
+            // Get the current working directory
+            const currentDirectory = process.cwd();
+            // Construct a file path using the current directory
+            const pathEmailTemplate = path.join(currentDirectory, 'src', 'template', 'email.html');
+            // Read the HTML file content
+            htmlContent = fs.readFileSync(pathEmailTemplate, 'utf-8');
 
-        // Replace placeholders with actual data
-        htmlContent = htmlContent.replace('{{booking_id}}', booking.rows[0].id);
-        htmlContent = htmlContent.replace('{{season_name}}', seasonName);
-        htmlContent = htmlContent.replace('{{seat_number}}', seatNumber);
-        htmlContent = htmlContent.replace('{{full_name}}', fullName);
-        htmlContent = htmlContent.replace('{{email}}', email);
-        htmlContent = htmlContent.replace('{{phone_number}}', phoneNumber);
-        htmlContent = htmlContent.replace('{{student_id}}', studentId === '' ? 'N/A' : studentId);
+            // Replace placeholders with actual data
+            htmlContent = htmlContent.replace('{{booking_id}}', booking.rows[0].id);
+            htmlContent = htmlContent.replace('{{season_name}}', seasonName);
+            htmlContent = htmlContent.replace('{{seat_number}}', seatNumber);
+            htmlContent = htmlContent.replace('{{full_name}}', fullName);
+            htmlContent = htmlContent.replace('{{email}}', email);
+            htmlContent = htmlContent.replace('{{phone_number}}', phoneNumber);
+            htmlContent = htmlContent.replace('{{student_id}}', studentId === '' ? 'N/A' : studentId);
+        } catch (err) {
+            console.error(err)
+            return res.status(500).json({
+                error: 'Email template not found'
+            })
+        }
 
         // Define the email options
         let mailOptions = {
@@ -65,6 +78,9 @@ class BookingController {
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.error(error);
+                return res.status(500).json({
+                    error: 'Email sending failed'
+                })
             } else {
                 console.log('Email sent: ' + info.response);
             }
