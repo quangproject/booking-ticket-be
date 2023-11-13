@@ -29,10 +29,15 @@ Booking.getBookingByEmail = (email) => {
     return db.query(`SELECT * FROM ${TABLE_NAME} WHERE ${COLUMN_EMAIL} = $1`, [email]);
 };
 
-// GET BOOKING BY EMAIL
+// GET BOOKING BY Id
 Booking.getBookingById = (id) => {
     return db.query(`SELECT * FROM ${TABLE_NAME} WHERE ${COLUMN_ID} = $1`, [id]);
 };
+
+// GET BOOKING BY SEAT ID
+Booking.getBookingBySeatId = (seatId) => {
+    return db.query(`SELECT * FROM ${TABLE_NAME} WHERE ${COLUMN_SEAT_ID} = $1`, [seatId]);
+}
 
 // TRUNCATE BOOKING
 Booking.truncate = () => {

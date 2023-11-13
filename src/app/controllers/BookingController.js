@@ -9,6 +9,14 @@ class BookingController {
     async create(req, res) {
         const { seatId, seatNumber, seasonId, seasonName, studentId, fullName, email, phoneNumber, qrCodeImageSrc } = req.body
 
+        // Get booking by seat id
+        const bookingBySeatId = await Booking.getBookingBySeatId(seatId)
+        if (bookingBySeatId.rowCount > 0) {
+            return res.status(500).json({
+                error: 'Seat is already booked'
+            })
+        }
+
         // Save to database
         const booking = await Booking.create(seatId, studentId, fullName, email, phoneNumber)
         if (booking.rowCount === 0) {
@@ -138,6 +146,35 @@ class BookingController {
 
         return res.status(200).json({
             data: result
+        })
+    }
+
+    async delete(req, res) {
+        const { id } = req.params
+
+        const booking = await Booking.getBookingById(id)
+        if (booking.rowCount === 0) {
+            return res.status(500).json({
+                error: 'Booking not found'
+            })
+        }
+
+        const seat = await Seat.updateStatus(booking.rows[0].seat_id, false)
+        if (seat.rowCount === 0) {
+            return res.status(500).json({
+                error: 'Seat status update failed'
+            })
+        }
+
+        const deleteBooking = await Booking.delete(id)
+        if (deleteBooking.rowCount === 0) {
+            return res.status(500).json({
+                error: 'Booking delete failed'
+            })
+        }
+
+        return res.status(200).json({
+            data: 'Delete success'
         })
     }
 
