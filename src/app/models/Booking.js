@@ -39,6 +39,11 @@ Booking.getBookingBySeatId = (seatId) => {
     return db.query(`SELECT * FROM ${TABLE_NAME} WHERE ${COLUMN_SEAT_ID} = $1`, [seatId]);
 }
 
+// DELETE BOOKING BY ID
+Booking.deleteBookingById = (id) => {
+    return db.query(`DELETE FROM ${TABLE_NAME} WHERE ${COLUMN_ID} = $1`, [id]);
+}
+
 // TRUNCATE BOOKING
 Booking.truncate = () => {
     return db.query(`TRUNCATE ${TABLE_NAME} RESTART IDENTITY CASCADE`);

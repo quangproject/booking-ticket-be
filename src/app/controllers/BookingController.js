@@ -149,7 +149,7 @@ class BookingController {
         })
     }
 
-    async delete(req, res) {
+    async deleteBooking(req, res) {
         const { id } = req.params
 
         const booking = await Booking.getBookingById(id)
@@ -166,7 +166,7 @@ class BookingController {
             })
         }
 
-        const deleteBooking = await Booking.delete(id)
+        const deleteBooking = await Booking.deleteBookingById(id)
         if (deleteBooking.rowCount === 0) {
             return res.status(500).json({
                 error: 'Booking delete failed'
