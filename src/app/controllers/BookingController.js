@@ -6,6 +6,57 @@ const { Seat } = require("../models/Seat")
 const { Season } = require("../models/Season")
 
 class BookingController {
+    async index(req, res) {
+        const bookings = await Booking.getAllBooking()
+        if (bookings.rowCount === 0) {
+            return res.status(500).json({
+                error: 'Booking not found'
+            })
+        }
+
+        var result = [];
+        for (let i = 0; i < bookings.rowCount; i++) {
+            const bookingData = {
+                id: bookings.rows[i].id,
+                studentId: bookings.rows[i].student_id,
+                fullName: bookings.rows[i].full_name,
+                email: bookings.rows[i].email,
+                phoneNumber: bookings.rows[i].phone_number,
+                seat: {}
+            };
+            result.push(bookingData);
+
+            const seats = await Seat.getSeatById(bookings.rows[i].seat_id);
+            if (seats.rowCount === 0) {
+                return res.status(500).json({
+                    error: 'Seats not found'
+                })
+            }
+            const seatData = {
+                id: seats.rows[0].id,
+                number: seats.rows[0].seat_number,
+                season: {}
+            };
+            bookingData.seat = seatData;
+
+            const season = await Season.getSeasonById(seats.rows[0].season_id);
+            if (season.rowCount === 0) {
+                return res.status(500).json({
+                    error: 'Season not found'
+                })
+            }
+            const seasonData = {
+                id: season.rows[0].id,
+                name: season.rows[0].name,
+            };
+            bookingData.seat.season = seasonData;
+        }
+
+        return res.status(200).json({
+            data: result
+        })
+    }
+
     async create(req, res) {
         const { seatId, seatNumber, seasonId, seasonName, studentId, fullName, email, phoneNumber, qrCodeImageSrc } = req.body
 

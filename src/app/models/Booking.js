@@ -13,6 +13,11 @@ const COLUMN_STATUS = "status";
 // EMPTY OBJECT
 const Booking = {};
 
+// GET ALL BOOKING
+Booking.getAllBooking = () => {
+    return db.query(`SELECT * FROM ${TABLE_NAME} ORDER BY ${COLUMN_BOOKING_DATE} DESC`);
+};
+
 // CREATE BOOKING
 Booking.create = (seatId, studentId, fullName, email, phoneNumber) => {
     return db.query(`INSERT INTO ${TABLE_NAME} (
