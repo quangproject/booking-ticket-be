@@ -22,6 +22,7 @@ class BookingController {
                 fullName: bookings.rows[i].full_name,
                 email: bookings.rows[i].email,
                 phoneNumber: bookings.rows[i].phone_number,
+                booking_date: bookings.rows[i].booking_date,
                 seat: {}
             };
             result.push(bookingData);
