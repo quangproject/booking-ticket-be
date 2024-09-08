@@ -23,6 +23,10 @@ app.use(cors());
 // HTTP logger
 app.use(morgan('combined'))
 
+app.get('/', function (req, res) {
+    res.send('Hello World!')
+})
+
 //Routes init
 route(app)
 

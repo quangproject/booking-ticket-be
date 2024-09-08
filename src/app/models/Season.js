@@ -2,7 +2,6 @@ const db = require("../../config/db");
 
 const TABLE_NAME = "seasons";
 const COLUMN_ID = "id";
-const COLUMN_NAME = "name";
 
 // EMPTY OBJECT
 const Season = {};

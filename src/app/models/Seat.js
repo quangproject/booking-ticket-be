@@ -3,7 +3,6 @@ const db = require("../../config/db");
 const TABLE_NAME = "seats";
 const COLUMN_ID = "id";
 const COLUMN_SEASON_ID = "season_id";
-const COLUMN_SEAT_NUMBER = "seat_number";
 const COLUMN_SEAT_IS_BOOKED = "is_booked";
 
 // EMPTY OBJECT

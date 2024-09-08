@@ -8,7 +8,6 @@ const COLUMN_FULL_NAME = "full_name";
 const COLUMN_EMAIL = "email";
 const COLUMN_PHONE_NUMBER = "phone_number";
 const COLUMN_BOOKING_DATE = "booking_date";
-const COLUMN_STATUS = "status";
 
 // EMPTY OBJECT
 const Booking = {};
