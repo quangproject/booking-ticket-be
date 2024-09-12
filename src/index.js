@@ -38,6 +38,6 @@ try {
     console.log('Connect database fail!')
 }
 
-app.listen(process.env.PORT, function () {
+app.listen(process.env.PORT || 3000, function () {
     console.log("Access at http://localhost:%d in %s mode", this.address().port, app.settings.env);
 });
